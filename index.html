@@ -6,21 +6,29 @@
     <title>For My Kokku ❤️</title>
     <style>
         body { background: #fff5f7; font-family: 'Poppins', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; overflow: hidden; text-align: center; }
-        .container { background: white; width: 85%; max-width: 400px; padding: 30px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
-        img { width: 100%; border-radius: 15px; margin-bottom: 15px; display: none; }
+        .container { background: white; width: 85%; max-width: 400px; padding: 30px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); position: relative; }
+        img { width: 100%; border-radius: 15px; margin-bottom: 15px; border: 3px solid #ff4d6d; }
         h1 { color: #ff4d6d; font-size: 20px; margin-bottom: 20px; }
         .options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         button { background: #ff4d6d; color: white; border: none; padding: 12px; border-radius: 12px; cursor: pointer; font-weight: bold; transition: 0.3s; }
-        button:hover { background: #ff758f; }
-        .score { margin-top: 15px; font-size: 14px; color: #888; }
-        #warning { color: red; font-weight: bold; margin-top: 10px; min-height: 20px; font-size: 13px; }
-        .final-msg { line-height: 1.6; color: #444; }
+        #noBtn { background: #fce4ec; color: #ff4d6d; z-index: 999; }
+        #warning { color: red; font-weight: bold; margin-top: 15px; font-size: 13px; min-height: 20px; }
+        .romantic-text { font-style: italic; color: #884d5a; line-height: 1.6; }
     </style>
 </head>
 <body>
 
 <div class="container" id="game-box">
-    <div id="p1">
+    <div id="p0">
+        <img src="us.jpg" style="display:block;">
+        <h1>Will you be my Valentine, Kokku? 🌹</h1>
+        <div class="btns" style="display:flex; justify-content:center; gap:15px;">
+            <button id="yesBtn0" onclick="next(0)">Yes!</button>
+            <button id="noBtn" onmouseover="moveButton()" onclick="moveButton()">No</button>
+        </div>
+    </div>
+
+    <div id="p1" style="display:none;">
         <h1>Question 1:<br>When did I officially propose to you? 💍</h1>
         <div class="options">
             <button onclick="wrong(1, 'I will literally kill you... think again! 🔪')">June 18</button>
@@ -43,7 +51,7 @@
     </div>
 
     <div id="p3" style="display:none;">
-        <img src="us.jpg" id="us-img" style="display:block;">
+        <img src="us.jpg" style="display:block;">
         <h1>Question 3:<br>When was this picture taken? 📸</h1>
         <div class="options">
             <button onclick="wrong(3, 'It was much longer ago than that!')">Nov 2022</button>
@@ -55,39 +63,40 @@
     </div>
 
     <div id="pFinal" style="display:none;">
-        <h1 id="final-title">Final Score: <span id="score-val">0</span>/3</h1>
-        <div class="final-msg">
-            <p>You remember every little detail about us, and that's why I love you. You are my forever Valentine. ❤️</p>
-            <p style="font-size: 30px;">💍✨🌹</p>
+        <img src="us.jpg" style="display:block;">
+        <h1>My Dearest Kokku... ❤️</h1>
+        <div class="romantic-text">
+            <p>"In a world full of temporary things, you are my forever."</p>
+            <p>Every memory we've shared is a treasure I hold close to my heart. Thank you for choosing me every single day. I love you more than words can ever express.</p>
+            <p><strong>Forever Yours. ✨💍</strong></p>
         </div>
     </div>
-
-    <div class="score" id="score-text">Points: 0</div>
 </div>
 
 <script>
-    let points = 0;
+    function moveButton() {
+        const btn = document.getElementById('noBtn');
+        const x = Math.random() * (window.innerWidth - btn.offsetWidth);
+        const y = Math.random() * (window.innerHeight - btn.offsetHeight);
+        btn.style.position = 'fixed';
+        btn.style.left = x + 'px';
+        btn.style.top = y + 'px';
+    }
+
+    function next(current) {
+        document.getElementById('p' + current).style.display = 'none';
+        document.getElementById('p' + (current + 1)).style.display = 'block';
+    }
 
     function correct(pageNum) {
-        points++;
-        document.getElementById('score-text').innerText = "Points: " + points;
-        
-        // Hide current, show next
         document.getElementById('p' + pageNum).style.display = 'none';
-        let next = (pageNum === 3) ? 'Final' : (pageNum + 1);
-        document.getElementById('p' + next).style.display = 'block';
-        
-        if(next === 'Final') {
-            document.getElementById('score-val').innerText = points;
-            document.getElementById('score-text').style.display = 'none';
-        }
+        let nextStage = (pageNum === 3) ? 'Final' : (pageNum + 1);
+        document.getElementById('p' + nextStage).style.display = 'block';
     }
 
     function wrong(pageNum, msg) {
-        document.getElementById('warning' + pageNum).innerText = msg;
-        document.getElementById('warning' + pageNum).style.color = "red";
-        
-        // Shake effect
+        const warn = document.getElementById('warning' + pageNum);
+        warn.innerText = msg;
         const box = document.getElementById('game-box');
         box.style.transform = "translateX(10px)";
         setTimeout(() => box.style.transform = "translateX(-10px)", 50);
